@@ -1,15 +1,16 @@
 use actix_web::{
     get, web, middleware,
     http::{StatusCode},
-    App, HttpServer, Responder, HttpResponse, Result
+    App, HttpServer, Responder, HttpResponse, Result, Either
 };
-use actix_files::{Files};
+use actix_files::{Files, NamedFile};
 
 #[get("/")]
-async fn index() -> Result<HttpResponse> {
-    Ok(HttpResponse::build(StatusCode::OK)
-        .content_type("text/html; charset=utf-8")
-        .body(include_str!("../html/index.html")))
+async fn index() -> Result<impl Responder> {
+    let file = NamedFile::open("./html/index.html")?
+        .customize()
+        .with_status(StatusCode::OK);
+    Ok(file)
 }
 
 #[actix_web::main]
