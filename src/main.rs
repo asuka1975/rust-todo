@@ -5,6 +5,8 @@ use actix_web::{
 };
 use actix_files::{Files, NamedFile};
 
+use src::router;
+
 #[get("/")]
 async fn index() -> Result<impl Responder> {
     let file = NamedFile::open("./html/index.html")?
@@ -17,6 +19,7 @@ async fn index() -> Result<impl Responder> {
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
+            .configure(router::router)
             .wrap(middleware::Compress::default())
             .service(Files::new("/static", "./html/static").show_files_listing())
             .service(index)
