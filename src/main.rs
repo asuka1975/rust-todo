@@ -19,8 +19,6 @@ async fn index() -> Result<impl Responder> {
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
-            .service(Files::new("/static", "./html/static").show_files_listing())
-            .service(index)
             .configure(router::router)
             .wrap(middleware::Compress::default())
     })

@@ -1,18 +1,8 @@
 use actix_web::web;
 
 use crate::task::{get_tasks, add_task};
-use actix_web::{
-    http::{StatusCode},
-    Responder, Result
-};
-use actix_files::{NamedFile};
-
-async fn index() -> Result<impl Responder> {
-    let file = NamedFile::open("./html/index.html")?
-        .customize()
-        .with_status(StatusCode::OK);
-    Ok(file)
-}
+use crate::page::index;
+use actix_files::{Files};
 
 pub fn router(cfg: &mut web::ServiceConfig) {
     cfg.service(
@@ -34,5 +24,9 @@ pub fn router(cfg: &mut web::ServiceConfig) {
                 web::resource("")
                     .route(web::get().to(index))
             )
-    );
+    )
+    .service(
+        Files::new("/static", "./html/static").show_files_listing()
+    )
+    ;
 }
